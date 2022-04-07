@@ -10,7 +10,7 @@ var n = 5; //n个物品
 var weights = new int[] { 0, 1, 2, 5, 6, 7 };     //物品对应的重量
 var values = new int[] { 0, 1, 6, 18, 22, 28 }; //物品对应的价值
 var maxWeight = 11; //背包可容重量
-var m = bag.GetBest(maxWeight, weights, values, n);
+var (m, choose) = bag.GetBest(maxWeight, weights, values, n);
 Console.WriteLine("行表示:有多少个物品, 列表示:背包容量, 数值表示:最大价值)");
 Console.Write("      背包可容重量 ");
 for (var w = 1; w <= maxWeight; w++)
@@ -33,4 +33,24 @@ for (var i = 1; i <= n; i++)
     Console.WriteLine();
 }
 
+Console.WriteLine("-------------------------------");
+
 Console.WriteLine($"所以可装重量{ maxWeight }的背包, 最大可装价值: { m[n, maxWeight]}");
+Console.WriteLine("最优装物品方案 计算表:");
+for (var i = 1; i <= n; i++)
+{
+    Console.Write("     ");
+    Console.Write(i); Console.Write("---");
+    Console.Write(values[i].ToString().PadLeft(2, '0'));
+    Console.Write("---");
+    Console.Write(weights[i]); Console.Write("    ");
+    for (var j = 1; j <= maxWeight; j++)
+    {
+        Console.Write(choose[i, j].ToString().PadLeft(3));
+    }
+    Console.WriteLine();
+}
+
+Console.Write("所以最优装方案所取的物品号为:");
+bag.PrintChoose(maxWeight, weights, n, choose);
+Console.WriteLine("");
