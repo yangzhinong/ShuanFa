@@ -30,14 +30,19 @@ namespace 算法设计
                  new LengthValueTable(10,30),
             }, memo);
 
-            Console.WriteLine("15米的钢管,能获得的最大价值:" + max);
-            Console.Write("切的方法是:");
+            Console.WriteLine($"{length}米的钢管,能获得的最大价值:{max}");
+            Console.Write("切割的方法是:");
             question.PrintCutMethod(memo, length);
 
             Console.WriteLine();
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// 打印切割方法
+        /// </summary>
+        /// <param name="memo"></param>
+        /// <param name="length"></param>
         public void PrintCutMethod(MemoDic memo, int length)
         {
             if (length <= 0) return;
@@ -49,6 +54,39 @@ namespace 算法设计
                 Console.Write("米  ");
                 PrintCutMethod(memo, length - cutLen);
             }
+        }
+
+        /// <summary>
+        /// 求解某个长度的钢管,按长度价值表,找出最大的价值以及切法
+        /// </summary>
+        /// <param name="totalLength">钢管总长度</param>
+        /// <param name="tables">长度价格表</param>
+        /// <param name="memos">求解过程备忘录</param>
+        /// <returns>最大价值</returns>
+        public int Cut(int totalLength, List<LengthValueTable> tables, MemoDic memos)
+        {
+            //先从备忘录中查是否已经计算过
+            if (memos.DicLengthValue.ContainsKey(totalLength)) return memos.DicLengthValue[totalLength];
+
+            int max = 0;
+            int cutLen = 0;
+            foreach (var item in tables)
+            {
+                if (totalLength >= item.Length) //这个条件加上上面的for循环就当于枚举所有情况的最大值
+                {
+                    var tempValue = (item.Value + Cut(totalLength - item.Length, tables, memos));
+                    if (tempValue > max)
+                    {
+                        max = tempValue;   //记录最优解
+                        cutLen = item.Length; //记录下最优时切下的长度
+                    }
+                }
+            }
+            //记录下这个长度的最大价值
+            memos.DicLengthValue.Add(totalLength, max);
+            memos.DicLengthChoose.Add(totalLength, cutLen);
+
+            return max;
         }
 
         /// <summary>
@@ -88,39 +126,6 @@ namespace 算法设计
             /// 长度为key钢管 最优时 最优时肯定要切的小段长度(value)
             /// </summary>
             public Dictionary<int, int> DicLengthChoose { get; set; } = new Dictionary<int, int>();
-        }
-
-        /// <summary>
-        /// 求解某个长度的钢管,按长度价值表,找出最大的价值以及切法
-        /// </summary>
-        /// <param name="totalLength">钢管总长度</param>
-        /// <param name="tables">长度价格表</param>
-        /// <param name="memos">求解过程备忘录</param>
-        /// <returns>最大价值</returns>
-        public int Cut(int totalLength, List<LengthValueTable> tables, MemoDic memos)
-        {
-            //先从备忘录中查是否已经计算过
-            if (memos.DicLengthValue.ContainsKey(totalLength)) return memos.DicLengthValue[totalLength];
-
-            int max = 0;
-            int cutLen = 0;
-            foreach (var item in tables)
-            {
-                if (totalLength >= item.Length) //这个条件加上上面的for循环就当于枚举所有情况的最大值
-                {
-                    var tempValue = (item.Value + Cut(totalLength - item.Length, tables, memos));
-                    if (tempValue > max)
-                    {
-                        max = tempValue;   //记录最优解
-                        cutLen = item.Length; //记录下最优时切下的长度
-                    }
-                }
-            }
-            //记录下这个长度的最大价值
-            memos.DicLengthValue.Add(totalLength, max);
-            memos.DicLengthChoose.Add(totalLength, cutLen);
-
-            return max;
         }
     }
 }
