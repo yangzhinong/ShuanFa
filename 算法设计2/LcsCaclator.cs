@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace 算法设计2
+namespace 算法设计
 {
     public class LcsCaclator
     {
@@ -18,6 +18,13 @@ namespace 算法设计2
 
             /// <summary>左上</summary>
             LeftTop
+        }
+
+        public static void Run()
+        {
+            Console.WriteLine("最长子序列");
+            var lcsCaclator = new LcsCaclator();
+            lcsCaclator.Lcs("adcdadds", "2c1dseese");
         }
 
         public void Lcs(string str1, string str2)
